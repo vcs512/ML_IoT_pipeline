@@ -1,0 +1,13 @@
+# python builds.
+*.pyc
+*.egg-info
+*/build/*
+
+# datasets and logs.
+1_dataset/*
+!1_dataset/Readme.md
+
+3_train/logs/*
+3_train/mlruns/*
+*/train_outputs/*
+
