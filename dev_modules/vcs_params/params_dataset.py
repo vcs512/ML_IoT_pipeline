@@ -11,3 +11,6 @@ TEST_DIR = "test"
 # Classes dirs.
 USABLE_DIR = "0_utilizavel"
 DEFECTIVE_DIR = "1_defeituoso"
+
+# input image size.
+IMAGE_SIZE = (128, 128)

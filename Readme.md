@@ -15,6 +15,10 @@ production pipeline:
 5. [LITE_MODEL](./5_lite_model/Readme.md): Quantize a model and get a binary
     to embed in IoT/MCU dispositives
 
+## Requirements install
+```bash
+$ pip install -r requirements.txt
+```
 
 # References
 ## Dataset reference
