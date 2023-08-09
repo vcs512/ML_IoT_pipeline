@@ -11,9 +11,9 @@ production pipeline:
 2. [EDA](./2_EDA_Exploratory_Data_Analysis/Readme.md): Perform statistical and qualitative 
     analysis in the dataset
 3. [TRAIN](./3_train/Readme.md): Train a model, tune hyperparameters, cross-validate
-4. [TEST](./4_test/Readme.md): Confirm training trends, look for over/underfitting
-5. [LITE_MODEL](./5_lite_model/Readme.md): Quantize a model and get a binary
+4. [LITE_MODEL](./4_lite_model/Readme.md): Quantize a model and get a binary
     to embed in IoT/MCU dispositives
+5. [TEST](./5_test/Readme.md): Confirm training trends, look for over/underfitting
 
 ## Requirements install
 ```bash

@@ -1,7 +1,10 @@
 # Convolutional neural network model class.
-import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Conv2D, AveragePooling2D, Dense, Dropout, Flatten
+
+import sys
+sys.path.insert(1, '../../')
+from dev_modules.vcs_params import params_dataset
 
 
 # MODEL HYPERPARAMETERS.
@@ -22,45 +25,47 @@ TRAIN_HYPER = dict(kernel_conv_size = KERNEL_CONV_SIZE,
                    stride_pool = STRIDE_POOL,
                    threshold_decision = THRESHOLD_DECISION)
 
-
-class minimal_CNN_MCU(tf.keras.Model):
-    """
-    Micro-CNN model for use in ESP32.
-    """
-    
-    def __init__(self, img_size: tuple) -> None:
+class minimal_CNN_MCU():
+    def __init__(self):
         """
-        Model architecture.
+        Construct net.
         """
-        super().__init__(self)
-
-        # sequential model.
-        self.model = Sequential(
-            [
-                # 128.
-                Conv2D(filters=N_FILTER_BASE,
-                    kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
-                    activation='relu', padding='same',
-                    input_shape=img_size + (1,)),
-                AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
-                                 strides=STRIDE_POOL),
-
-                # 64
-                Conv2D(filters=2*N_FILTER_BASE,
-                    kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
-                    activation='relu', padding='same'),
-                AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
-                                 strides=STRIDE_POOL),
-
-                # Output.
-                Flatten(),
-                Dense(1, activation='sigmoid'),
-            ]
-        )
-
-
-    def call(self, inputs: tf.Tensor) -> tf.Tensor:
-        """
-        Return predicted CNN output.
-        """
-        return self.model(inputs)
+        self.model = Sequential()
+        # 128.
+        self.model.add(Conv2D(filters=N_FILTER_BASE,
+                              kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
+                              activation='relu', padding='same',
+                              input_shape=params_dataset.IMAGE_SIZE+ (1,)))
+        self.model.add(AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
+                                        strides=STRIDE_POOL))
+        # 64
+        self.model.add(Conv2D(filters=2*N_FILTER_BASE,
+                              kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
+                              activation='relu', padding='same'))
+        self.model.add(AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
+                                        strides=STRIDE_POOL))
+        # 32
+        self.model.add(Conv2D(filters=4*N_FILTER_BASE,
+                              kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
+                              activation='relu', padding='same'))
+        self.model.add(AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
+                                        strides=STRIDE_POOL))
+        self.model.add(Dropout(.05))
+        # 16
+        self.model.add(Conv2D(filters=4*N_FILTER_BASE,
+                              kernel_size=(KERNEL_CONV_SIZE + 2, KERNEL_CONV_SIZE + 2), strides=1,
+                              activation='relu', padding='same'))
+        self.model.add(AveragePooling2D(pool_size=(KERNEL_POOL_SIZE, KERNEL_POOL_SIZE),
+                                        strides=STRIDE_POOL))
+        self.model.add(Dropout(.05))
+        # 8
+        self.model.add(Conv2D(filters=8*N_FILTER_BASE,
+                              kernel_size=(KERNEL_CONV_SIZE, KERNEL_CONV_SIZE), strides=1,
+                              activation='relu', padding='same'))
+        self.model.add(Dropout(.05))
+        # Output
+        self.model.add(Flatten())
+        self.model.add(Dense(1, activation='sigmoid'))
+        
+    def get_model(self) -> Sequential:
+        return self.model

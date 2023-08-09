@@ -11,3 +11,5 @@
 3_train/mlruns/*
 */train_outputs/*
 
+4_lite_model/mlruns/*
+*/lite_outputs/*
