@@ -9,7 +9,7 @@ RANDOM_SEED = 0
 # experiment run infos.
 RUN_NAME = "old"
 RUN_NAME = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + '_' + RUN_NAME
-TENSORFLOW_DIR = "./logs/" + RUN_NAME
+TENSORBOARD_DIR = "./logs/" + RUN_NAME
 
 # data information.
 CLASSES = {'0_utilizavel': 0,
@@ -36,7 +36,7 @@ SAVE_BEST_PARAMS = dict(monitor="val_loss", save_best_only=True)
 
 # dirs to save.
 TRAIN_OUTPUTS_DIR = os.path.join("train_outputs", RUN_NAME)
-MODELS_DIR = os.path.join(TRAIN_OUTPUTS_DIR, "checkpoints")
+MODELS_DIR = "models"
 TRAIN_ERRORS_DIR = "train_errors"
 VAL_ERRORS_DIR = "validation_errors"
 
@@ -49,6 +49,6 @@ WRONG_VAL_FILE = "wrong_val_files.pkl"
 
 # training loop hyperparameters.
 LEARNING_RATE = 1e-3
-NUM_EPOCHS = 50
+NUM_EPOCHS = 40
 FIT_PARAMS = dict(batch_size=BATCH_SIZE,
                   epochs=NUM_EPOCHS)
