@@ -2,14 +2,21 @@
 import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Conv2D, AveragePooling2D, Dense, Dropout, Flatten
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import sys
 sys.path.insert(1, '../../')
 from dev_modules.vcs_params import params_dataset
 from dev_modules.vcs_params import params_model
 
+import cv2
+import numpy as np
+from src.Lite_handle import Lite_handler
 
 class fp_CNN_MCU():
+    """
+    Floating point CNN for IoT and MCU devices.
+    """
     def __init__(self):
         """
         Construct net.
@@ -88,3 +95,39 @@ class fp_CNN_MCU():
         Abstraction to inference in floating point model.
         """
         return self.loaded_model.predict(x_input)
+
+
+class qt_CNN_MCU():
+    """
+    Quantized CNN for IoT and MCU devices.
+    """
+    def __init__(self):
+        """
+        Init lite handler class.
+        """
+        self.lite_h = Lite_handler()
+
+
+    def get_model(self,
+                  fp_model: Sequential,
+                  dataset: ImageDataGenerator,
+                  savedir: str) -> Sequential:
+        """
+        Return the qt model build.
+        """
+        self.qt_model = self.lite_h.build_quantized_model(fp_model, dataset, savedir)
+        return self.qt_model
+
+
+    def qt_predict(self, dataset: ImageDataGenerator) -> tf.Tensor:
+        """
+        Abstraction to inference in quantized model.
+        """
+        y_pred = list()
+        for file in dataset.filepaths:
+            sample = cv2.imread(file, cv2.IMREAD_GRAYSCALE).reshape(-1, 128, 128, 1)
+            
+            y_pred.append(self.lite_h.predict_tflite(sample)[0])
+        y_pred = np.array(y_pred)
+        
+        return y_pred

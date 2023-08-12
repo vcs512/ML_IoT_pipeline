@@ -27,13 +27,11 @@ class Custom_metrics():
     Class to abstract use of usual metrics.
     """
     def __init__(self,
-                 model: model_class.fp_CNN_MCU,
                  logger: Logger,
                  decision_threshold: float) -> None:
         """
         Define model and logger to obtain metrics.
         """
-        self.model = model
         self.logger = logger
         self.decision_threshold = decision_threshold
 
@@ -41,7 +39,8 @@ class Custom_metrics():
     def draw_confusion_matrix(self,
                               y_true: np.ndarray,
                               y_pred: np.ndarray,
-                              title: str) -> np.ndarray:
+                              title: str,
+                              model_type: str) -> np.ndarray:
         """
         Plot the confusion matrix.
         Return the confusion matrix (skleanr standard).
@@ -66,17 +65,20 @@ class Custom_metrics():
         ax.set_yticklabels(CLASSES_LIST, va='center')
         plt.tick_params(axis='both', labelsize=14, length=0)
         
-        self.logger.log_plt_image(matrix_figure,
-                                  "{}_confusion_matrix".format(title))
+        self.logger.log_plt_image(
+            matrix_figure,
+            "{}_{}_confusion_matrix".format(model_type, title))
 
-        self.logger.log_artifact_pkl(confusion_matrix,
-                                     "{}_confusion_matrix.pkl".format(title))
+        self.logger.log_artifact_pkl(
+            confusion_matrix,
+            "{}_{}_confusion_matrix.pkl".format(model_type, title))
 
         return confusion_matrix
 
 
     def visualize_errors(self,
                          title: str,
+                         model_type: str,
                          y_true: np.ndarray,
                          y_pred: np.ndarray,
                          filepaths: str,
@@ -96,49 +98,37 @@ class Custom_metrics():
         
         if draw_errors:
             for error in wrong_inferences:
-                filename = title + "_" + error.split("/")[-1]
+                filename = model_type + "_" + title + "_" + error.split("/")[-1]
                 sample = cv2.imread(error, cv2.IMREAD_GRAYSCALE)
                 
                 self.logger.log_cv2_image(sample, filename)
         
         self.logger.log_artifact_pkl(wrong_inferences,
-                                     "{}_errors.pkl".format(title))
+                                     "{}_{}_errors.pkl".format(model_type,
+                                                               title))
         return wrong_inferences
 
 
-    def visualize_individual_errors(self,
-                                    title: str,
-                                    files_set: list) -> list:
+    def qt_metrics(self, y_fp: np.ndarray, y_qt: np.ndarray) -> list:
         """
-        Save wrong inferences, batch = 1.
-        Return name of wrong inferred archives.
+        Get quantization error for fp and qt models.
+        Return [quantization_errors_list, mean, std_deviation].
         """
-        wrong_inference = list()
+        diff = y_qt - y_fp
+        mean = np.mean(diff)
+        std = np.std(diff)
 
-        for file in files_set:
-            ground_truth = int(file.split('/')[-2][0])
-            filename = title + "_" + file.split("/")[-1]
+        abs_diff = np.abs(diff)
+        abs_mean = np.mean(np.abs(diff))
+        abs_std = np.std(abs_diff)
 
-            sample = cv2.imread(file, cv2.IMREAD_GRAYSCALE).reshape(
-                -1,
-                params_dataset.IMAGE_SIZE[0], params_dataset.IMAGE_SIZE[1],
-                1)
-            pred = self.model.fp_predict(sample)
-            pred = (pred >= params_model.THRESHOLD_DECISION).reshape(-1,)
-            
-            diff = pred - ground_truth
-            # 0 : ok
-            # 1 : pred==1, gt==0 -> FP
-            # -1: pred==0, gt==1 -> FN
-
-            if diff:
-                wrong_inference.append(filename)
-                image = sample[0, :, :, 0]
-                self.logger.log_cv2_image(image, filename)
+        qt_metrics = [diff, mean, std,
+                      abs_diff, abs_mean, abs_std]
         
-        wrong_inference = natsort.natsorted(wrong_inference)
-        self.logger.log_artifact_pkl(wrong_inference,
-                                     "{}_errors.pkl".format(title))
-        return wrong_inference
-
-
+        print("[mean, std, abs_mean, abs_std]\n",
+               [mean, std, abs_mean, abs_std])
+        
+        self.logger.log_artifact_pkl(qt_metrics,
+                                     "qt_metrics.pkl")
+        
+        return qt_metrics

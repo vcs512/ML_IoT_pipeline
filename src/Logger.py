@@ -44,12 +44,12 @@ class Logger():
             pickle.dump(object_to_save, file)
 
 
-    def create_model_checkpoints_dir(self) -> str:
+    def create_model_dir(self, type: str) -> str:
         """
         Create checkpoints dir for model training.
         Return the models checkpoint dir created.
         """
-        self.models_checkpoints_dir = os.path.join(self.output_dir,
+        self.models_checkpoints_dir = os.path.join(self.output_dir, type,
                                                    params_train.MODELS_DIR)
         os.makedirs(self.models_checkpoints_dir)
         return self.models_checkpoints_dir

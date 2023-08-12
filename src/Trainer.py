@@ -14,6 +14,7 @@ from dev_modules.vcs_model import model_class
 # logger.
 from src.Logger import Logger
 from src.Metrics import Custom_metrics
+from src.Lite_handle import Lite_handler
 
 # confere data.
 import os
@@ -51,6 +52,7 @@ class Trainer():
     def __init__(self) -> None:
         # reproducibility.
         self.logger = Logger()
+        self.lite_h = Lite_handler()
         tf.keras.utils.set_random_seed(params_train.RANDOM_SEED)
         
     def end_run(self) -> None:
@@ -62,8 +64,8 @@ class Trainer():
         Build floating point tensorflow model.
         Return sequential model created.
         """
-        self.model_h = model_class.fp_CNN_MCU()
-        self.fp_model = self.model_h.get_model()
+        self.fp_model_h = model_class.fp_CNN_MCU()
+        self.fp_model = self.fp_model_h.get_model()
         # define metrics to log.
         self.fp_model.compile(
             optimizer=keras.optimizers.Adam(params_train.LEARNING_RATE),
@@ -136,12 +138,12 @@ class Trainer():
         Training loop for fp model.
         Return the training metrics history dict.
         """
-        self.models_dir = self.logger.create_model_checkpoints_dir()
+        self.fp_models_dir = self.logger.create_model_dir("fp")
         tensorboard_dir = self.logger.create_tensorboard_dir()
         callbacks = [
-            keras.callbacks.ModelCheckpoint(os.path.join(self.models_dir, "last")
+            keras.callbacks.ModelCheckpoint(os.path.join(self.fp_models_dir, "last")
                                             + params_train.MODEL_EXTENSION),
-            keras.callbacks.ModelCheckpoint(os.path.join(self.models_dir, "best")
+            keras.callbacks.ModelCheckpoint(os.path.join(self.fp_models_dir, "best")
                                             + params_train.MODEL_EXTENSION,
                                             **params_train.SAVE_BEST_PARAMS),
             keras.callbacks.TensorBoard(log_dir=tensorboard_dir),
@@ -164,9 +166,9 @@ class Trainer():
         """
         Load last model trained.
         """
-        best_model = os.path.join(self.models_dir, "best") \
+        best_model = os.path.join(self.fp_models_dir, "best") \
                                   + params_train.MODEL_EXTENSION
-        self.fp_model = self.model_h.load_model(best_model)
+        self.fp_model = self.fp_model_h.load_model(best_model)
 
 
     def get_ground_truth(self,
@@ -183,36 +185,50 @@ class Trainer():
 
 
     def init_metrics_handler(self):
-        self.metrics_h = Custom_metrics(self.model_h,
-                                        self.logger,
+        self.metrics_h = Custom_metrics(self.logger,
                                         params_model.THRESHOLD_DECISION)
 
 
     def get_confusion_matrix(self,
-                             set: ImageDataGenerator,
-                             title: str):
+                             dataset: ImageDataGenerator,
+                             title: str,
+                             model_type: str):
         """
         Obtain confusion matrix for set given its ground truths.
         """
-        y_ground_truth = self.get_ground_truth(set)
-        y_preds = self.model_h.fp_predict(set)
+        y_ground_truth = self.get_ground_truth(dataset)
+        
+        if model_type == "fp":
+            y_preds = self.fp_model_h.fp_predict(dataset)
+        elif model_type == "qt":
+            y_preds = self.qt_model_h.qt_predict(dataset)
+        
         confusion_matrix = self.metrics_h.draw_confusion_matrix(y_ground_truth,
                                                                 y_preds,
-                                                                title)
+                                                                title,
+                                                                model_type)
         print("Confusion matrix", title, '\n', confusion_matrix)
 
 
     def get_errors(self,
-                   set: ImageDataGenerator,
+                   dataset: ImageDataGenerator,
                    title: str,
+                   model_type: str,
                    draw_errors: bool = False):
         """
         Obtain wrong inferences for given set.
         """
-        y_ground_truth = self.get_ground_truth(set)
-        y_preds = self.model_h.fp_predict(set).reshape(y_ground_truth.shape)
-        filepaths = np.array(set.filepaths)
+        y_ground_truth = self.get_ground_truth(dataset)
+        
+        if model_type == "fp":
+            y_preds = self.fp_model_h.fp_predict(dataset)
+        elif model_type == "qt":
+            y_preds = self.qt_model_h.qt_predict(dataset)
+        
+        y_preds = y_preds.reshape(y_ground_truth.shape)
+        filepaths = np.array(dataset.filepaths)
         errors_list = self.metrics_h.visualize_errors(title,
+                                                      model_type,
                                                       y_ground_truth, y_preds,
                                                       filepaths,
                                                       draw_errors=draw_errors)
@@ -228,3 +244,31 @@ class Trainer():
         files_set = set._filepaths
         errors_list = self.metrics_h.visualize_individual_errors(title, files_set)
         print("Errors list", title, '\n', errors_list)
+
+
+    def build_qt_model(self) -> tf.keras.models.Sequential:
+        """
+        Build quantized tensorflow model.
+        Return sequential model created.
+        """
+        self.qt_model_dir = self.logger.create_model_dir("qt")
+        self.qt_model_h = model_class.qt_CNN_MCU()
+        self.qt_model =  self.qt_model_h.get_model(self.fp_model,
+                                                   self.train_set,
+                                                   self.qt_model_dir)
+        
+        # return built model.
+        return self.qt_model
+
+
+    def quantization_error(self, dataset: ImageDataGenerator) -> list:
+        """
+        Get quantization error for fp and qt models.
+        Return [quantization_errors_list, mean, std_deviation].
+        """
+        y_fp = self.fp_model_h.fp_predict(dataset).flatten()
+        y_qt = self.qt_model_h.qt_predict(dataset).flatten()
+        qt_metrics = self.metrics_h.qt_metrics(y_fp, y_qt)
+        
+        # return qt errors.
+        return qt_metrics
