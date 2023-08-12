@@ -12,13 +12,10 @@ from dev_modules.vcs_params import params_train
 from dev_modules.vcs_model import model_class
 
 # logger.
-from Logger import Logger
-from Metrics import Custom_metrics
+from src.Logger import Logger
+from src.Metrics import Custom_metrics
 
 # confere data.
-import sklearn.metrics
-import cv2
-import natsort
 import os
 
 # data visualization.
@@ -86,7 +83,7 @@ class Trainer():
         return self.fp_model
 
 
-    def train_val_split(self) -> list:
+    def train_val_split(self, augment:bool = False) -> list:
         """
         Tensorflow training generator.
         Return list [train_set, val_set].
@@ -96,24 +93,37 @@ class Trainer():
                                 params_dataset.DATASET_TYPE,
                                 params_dataset.TRAIN_DIR)
 
-        train_gen = ImageDataGenerator(**params_train.TRAINING_GEN_PARAMS)
+        if augment:
+            gen_aug_option = params_train.TRAINING_AUG_GEN_PARAMS
+            save_name = "aug"
+            shuffle = True
+        else:
+            gen_aug_option = dict()
+            save_name = "results"
+            shuffle = False
 
-        self.train_set = train_gen.flow_from_directory(directory=dir_train,
-                                                  subset='training',
-                                                  **params_train.TRAINING_FLOW_PARAMS)
+        train_gen = ImageDataGenerator(**gen_aug_option,
+                                       validation_split=params_train.PERC_VAL)
+
+        self.train_set = train_gen.flow_from_directory(
+            directory=dir_train,
+            subset='training',
+            shuffle=shuffle,
+            **params_train.TRAINING_FLOW_PARAMS)
         print('Training set:\n', self.train_set.class_indices)
         train_files = self.train_set._filepaths
-        train_files = natsort.natsorted(train_files)
 
-        self.val_set = train_gen.flow_from_directory(directory=dir_train,
-                                                subset='validation',
-                                                **params_train.TRAINING_FLOW_PARAMS)
+        self.val_set = train_gen.flow_from_directory(
+            directory=dir_train,
+            subset='validation',
+            shuffle=shuffle,
+            **params_train.TRAINING_FLOW_PARAMS)
         print('\nValidation set:\n', self.val_set.class_indices)
         val_files = self.val_set._filepaths
-        val_files = natsort.natsorted(val_files)
 
         # save file names for sets created.
-        for sets_files in zip(["Train_files", "Validation_files"],
+        for sets_files in zip(["Train_files_{}.pkl".format(save_name),
+                               "Validation_files_{}.pkl".format(save_name)],
                               [train_files, val_files]):
             self.logger.log_artifact_pkl(sets_files[1], sets_files[0])
 
@@ -159,11 +169,16 @@ class Trainer():
         self.fp_model = self.model_h.load_model(best_model)
 
 
-    def get_ground_truth(self, set: ImageDataGenerator) -> tf.Tensor:
+    def get_ground_truth(self,
+                         set: ImageDataGenerator) -> tf.Tensor:
         """
         Abstraction to get "set" ground truths.
         """
-        ground_truth = set.classes[set.index_array]
+        # if shuffle.
+        if set.index_array is not None:
+            ground_truth = set.classes[set.index_array]
+        else:
+            ground_truth = set.labels
         return ground_truth
 
 
@@ -189,10 +204,27 @@ class Trainer():
 
     def get_errors(self,
                    set: ImageDataGenerator,
-                   title: str):
+                   title: str,
+                   draw_errors: bool = False):
         """
         Obtain wrong inferences for given set.
         """
+        y_ground_truth = self.get_ground_truth(set)
+        y_preds = self.model_h.fp_predict(set).reshape(y_ground_truth.shape)
+        filepaths = np.array(set.filepaths)
+        errors_list = self.metrics_h.visualize_errors(title,
+                                                      y_ground_truth, y_preds,
+                                                      filepaths,
+                                                      draw_errors=draw_errors)
+        print("Errors list", title, '\n', errors_list)
+
+
+    def get_individual_errors(self,
+                              set: ImageDataGenerator,
+                              title: str):
+        """
+        Obtain wrong inferences for given set, batch = 1.
+        """
         files_set = set._filepaths
-        errors_list = self.metrics_h.visualize_errors(title, files_set)
+        errors_list = self.metrics_h.visualize_individual_errors(title, files_set)
         print("Errors list", title, '\n', errors_list)

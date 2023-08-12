@@ -19,10 +19,9 @@ CLASSES = {'0_utilizavel': 0,
 TRAIN_FILES = "train_files.pkl"
 VAL_FILES = "val_files.pkl"
 BATCH_SIZE = 16
-VALIDATION_IN_TRAIN = 0.20
-TRAINING_GEN_PARAMS = dict(horizontal_flip=True,
-                           vertical_flip=True,
-                           validation_split=VALIDATION_IN_TRAIN)
+PERC_VAL = 0.20
+TRAINING_AUG_GEN_PARAMS = dict(horizontal_flip=True,
+                               vertical_flip=True)
 TRAINING_FLOW_PARAMS = dict(target_size=params_dataset.IMAGE_SIZE,
                             color_mode='grayscale',
                             classes=CLASSES,

@@ -5,20 +5,25 @@ that fit in IoT/MCU (Internet of Things / Microcontroller) devices.
 
 ## ML Pipeline
 
-Directories were made to follow a standard Machine Learning (ML) development to 
-production pipeline:
-1. [DATASET](./0_dev_notebooks/1_dataset/Readme.md):
+Notebooks were made to follow a standard Machine Learning (ML)
+development to production pipeline:
+- [COMPLETE_INFORMATION](./0_dev_notebooks/Readme.md):
+    Complete general information concluded on each step
+1. [DATASET](./dataset/Readme.md):
     Save the dataset used for training and test
-2. [EDA](./0_dev_notebooks/2_EDA_Exploratory_Data_Analysis/Readme.md):
+2. [EDA](./0_dev_notebooks/2_dataset_explore.ipynb):
     Perform statistical and qualitative analysis in the dataset
-3. [TRAIN](./0_dev_notebooks/3_train/Readme.md):
-    Train a model, tune hyperparameters, cross-validate
+3. [TRAIN](./0_dev_notebooks/3_holdout_train.ipynb):
+    Train a model, tune hyperparameters, evaluate results
 4. [LITE_MODEL](./0_dev_notebooks/4_lite_model/Readme.md):
     Quantize a model and get a binary to embed in IoT/MCU dispositives
 5. [TEST](./0_dev_notebooks/5_test/Readme.md):
     Confirm training trends, look for over/underfitting
 
-## Requirements install
+## Automatic scripts
+For automatic usage in CLI, it is possible to run scripts in ```run``` directory.
+
+## Requirements installation
 ```bash
 $ pip install -r requirements.txt
 ```

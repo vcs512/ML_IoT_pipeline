@@ -7,13 +7,10 @@
 dataset/*
 !dataset/Readme.md
 
-*/3_train/logs/*
-*/3_train/mlruns/*
-*/*/train_outputs/*
-
 */4_lite_model/mlruns/*
 */*/lite_outputs/*
 
-src/train_outputs/*
-src/mlruns/*
-src/logs/*
+*/train_outputs/*
+*/mlruns/*
+*/logs/*
+*/models/*

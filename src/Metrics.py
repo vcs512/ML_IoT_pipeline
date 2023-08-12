@@ -9,7 +9,7 @@ from dev_modules.vcs_params import params_lite
 from dev_modules.vcs_model import model_class
 from dev_modules.vcs_params import params_model
 
-from Logger import Logger
+from src.Logger import Logger
 
 import os
 import natsort
@@ -77,9 +77,40 @@ class Custom_metrics():
 
     def visualize_errors(self,
                          title: str,
-                         files_set: list) -> list:
+                         y_true: np.ndarray,
+                         y_pred: np.ndarray,
+                         filepaths: str,
+                         draw_errors: bool = False) -> list:
         """
         Save wrong inferences.
+        Return name of wrong inferred archives.
+        """
+        y_pred = y_pred >= params_model.THRESHOLD_DECISION
+        diff = y_pred - y_true
+        # 0 : ok
+        # 1 : pred==1, gt==0 -> FP
+        # -1: pred==0, gt==1 -> FN
+        
+        errors_idx = np.nonzero(diff)[0]
+        wrong_inferences = filepaths[errors_idx].tolist()
+        
+        if draw_errors:
+            for error in wrong_inferences:
+                filename = title + "_" + error.split("/")[-1]
+                sample = cv2.imread(error, cv2.IMREAD_GRAYSCALE)
+                
+                self.logger.log_cv2_image(sample, filename)
+        
+        self.logger.log_artifact_pkl(wrong_inferences,
+                                     "{}_errors.pkl".format(title))
+        return wrong_inferences
+
+
+    def visualize_individual_errors(self,
+                                    title: str,
+                                    files_set: list) -> list:
+        """
+        Save wrong inferences, batch = 1.
         Return name of wrong inferred archives.
         """
         wrong_inference = list()
@@ -109,3 +140,5 @@ class Custom_metrics():
         self.logger.log_artifact_pkl(wrong_inference,
                                      "{}_errors.pkl".format(title))
         return wrong_inference
+
+
