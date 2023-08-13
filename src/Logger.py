@@ -36,6 +36,13 @@ class Logger():
         os.makedirs(self.errors_dir)
 
 
+    def log_metrics(self, metrics: dict) -> None:
+        """
+        Log metrics of the experiment.
+        """
+        mlflow.log_metrics(metrics)
+
+
     def log_artifact_pkl(self, object_to_save: object, name: str) -> None:
         """
         Log object_to_save as a 'name.pkl'.

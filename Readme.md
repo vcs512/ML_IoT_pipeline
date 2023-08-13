@@ -15,9 +15,9 @@ development to production pipeline:
     Perform statistical and qualitative analysis in the dataset
 3. [TRAIN](./0_dev_notebooks/3_holdout_train.ipynb):
     Train a model, tune hyperparameters, evaluate results
-4. [LITE_MODEL](./0_dev_notebooks/4_lite_model/Readme.md):
+4. [LITE_MODEL](./0_dev_notebooks/4_fp_qt_train.ipynb):
     Quantize a model and get a binary to embed in IoT/MCU dispositives
-5. [TEST](./0_dev_notebooks/5_test/Readme.md):
+5. [TEST](./0_dev_notebooks/5_fp_qt_train_test.ipynb):
     Confirm training trends, look for over/underfitting
 
 ## Automatic scripts

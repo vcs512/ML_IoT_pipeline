@@ -7,7 +7,7 @@ from dev_modules.vcs_params import params_dataset
 RANDOM_SEED = 0
 
 # experiment run infos.
-RUN_NAME = "old"
+RUN_NAME = "max_pool"
 RUN_NAME = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + '_' + RUN_NAME
 TENSORBOARD_DIR = "./logs/" + RUN_NAME
 

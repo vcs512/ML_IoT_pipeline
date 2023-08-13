@@ -75,14 +75,14 @@ $ tensorboard --logdir logs
 
 
 # MCU/IoT model
-[Lite_model_notebook](./4_lite_model/create_lite_model.ipynb)
+[Lite_model_notebook](./4_fp_qt_train.ipynb)
 
 Convert full floating point model to run in IoT/MCU:
 - Quantize: check errors and efects
 
 
 # Test
-[Tests_notebook](./5_test_results.ipynb)
+[Tests_notebook](./5_fp_qt_train_test.ipynb)
 
 Load models and evaluate through test set for:
 - Accuracy

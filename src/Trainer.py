@@ -184,7 +184,7 @@ class Trainer():
         return ground_truth
 
 
-    def init_metrics_handler(self):
+    def init_metrics_handler(self) -> None:
         self.metrics_h = Custom_metrics(self.logger,
                                         params_model.THRESHOLD_DECISION)
 
@@ -235,17 +235,6 @@ class Trainer():
         print("Errors list", title, '\n', errors_list)
 
 
-    def get_individual_errors(self,
-                              set: ImageDataGenerator,
-                              title: str):
-        """
-        Obtain wrong inferences for given set, batch = 1.
-        """
-        files_set = set._filepaths
-        errors_list = self.metrics_h.visualize_individual_errors(title, files_set)
-        print("Errors list", title, '\n', errors_list)
-
-
     def build_qt_model(self) -> tf.keras.models.Sequential:
         """
         Build quantized tensorflow model.
@@ -272,3 +261,28 @@ class Trainer():
         
         # return qt errors.
         return qt_metrics
+
+    def test_set_gen(self) -> list:
+        """
+        Tensorflow test generator.
+        Return test_set.
+        """
+        dir_test = os.path.join("..",
+                                params_dataset.DATASET_ROOT_DIR,
+                                params_dataset.DATASET_TYPE,
+                                params_dataset.TEST_DIR)
+
+        test_gen = ImageDataGenerator()
+
+        self.test_set = test_gen.flow_from_directory(
+            directory=dir_test,
+            shuffle=False,
+            **params_train.TRAINING_FLOW_PARAMS)
+        print('Test set:\n', self.test_set.class_indices)
+        test_files = self.test_set._filepaths
+
+        # save file names for test set.
+        self.logger.log_artifact_pkl(test_files, "Test_files.pkl")
+
+        # return iterable sets.        
+        return self.test_set

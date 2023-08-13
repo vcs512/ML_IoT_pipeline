@@ -1,7 +1,7 @@
 # Convolutional neural network model class.
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Conv2D, AveragePooling2D, Dense, Dropout, Flatten
+from keras.layers import Conv2D, AveragePooling2D, Dense, Dropout, Flatten, MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import sys
@@ -26,50 +26,59 @@ class fp_CNN_MCU():
         
         self.fp_model = Sequential()
         # 128.
-        self.fp_model.add(Conv2D(filters=params_model.N_FILTER_BASE,
-                              kernel_size=(params_model.KERNEL_CONV_SIZE,
-                                           params_model.KERNEL_CONV_SIZE),
-                              strides=1,
-                              activation='relu', padding='same',
-                              input_shape=params_dataset.IMAGE_SIZE+ (1,)))
-        self.fp_model.add(AveragePooling2D(pool_size=(params_model.KERNEL_POOL_SIZE,
-                                                   params_model.KERNEL_POOL_SIZE),
-                                        strides=params_model.STRIDE_POOL))
+        self.fp_model.add(Conv2D(
+            filters=params_model.L0_N_FILTER,
+            kernel_size=(params_model.L0_KERNEL_SIZE,
+                         params_model.L0_KERNEL_SIZE),
+            strides=1,
+            activation='relu', padding='same',
+            input_shape=params_dataset.IMAGE_SIZE + (1,)))
+        self.fp_model.add(AveragePooling2D(
+            pool_size=(params_model.POOL_KERNEL_SIZE,
+                       params_model.POOL_KERNEL_SIZE),
+            strides=params_model.POOL_STRIDE))
         # 64
-        self.fp_model.add(Conv2D(filters=2*params_model.N_FILTER_BASE,
-                              kernel_size=(params_model.KERNEL_CONV_SIZE,
-                                           params_model.KERNEL_CONV_SIZE),
-                              strides=1,
-                              activation='relu', padding='same'))
-        self.fp_model.add(AveragePooling2D(pool_size=(params_model.KERNEL_POOL_SIZE,
-                                                   params_model.KERNEL_POOL_SIZE),
-                                        strides=params_model.STRIDE_POOL))
+        self.fp_model.add(Conv2D(
+            filters=params_model.L1_N_FILTER,
+            kernel_size=(params_model.L1_KERNEL_SIZE,
+                         params_model.L1_KERNEL_SIZE),
+            strides=1,
+            activation='relu', padding='same'))
+        self.fp_model.add(AveragePooling2D(
+            pool_size=(params_model.POOL_KERNEL_SIZE,
+                       params_model.POOL_KERNEL_SIZE),
+            strides=params_model.POOL_STRIDE))
         # 32
-        self.fp_model.add(Conv2D(filters=4*params_model.N_FILTER_BASE,
-                              kernel_size=(params_model.KERNEL_CONV_SIZE,
-                                           params_model.KERNEL_CONV_SIZE),
-                              strides=1,
-                              activation='relu', padding='same'))
-        self.fp_model.add(AveragePooling2D(pool_size=(params_model.KERNEL_POOL_SIZE,
-                                                   params_model.KERNEL_POOL_SIZE),
-                                        strides=params_model.STRIDE_POOL))
+        self.fp_model.add(Conv2D(
+            filters=params_model.L2_N_FILTER,
+            kernel_size=(params_model.L2_KERNEL_SIZE,
+                         params_model.L2_KERNEL_SIZE),
+            strides=1,
+            activation='relu', padding='same'))
+        self.fp_model.add(AveragePooling2D(
+            pool_size=(params_model.POOL_KERNEL_SIZE,
+                       params_model.POOL_KERNEL_SIZE),
+            strides=params_model.POOL_STRIDE))
         self.fp_model.add(Dropout(.05))
         # 16
-        self.fp_model.add(Conv2D(filters=4*params_model.N_FILTER_BASE,
-                              kernel_size=(params_model.KERNEL_CONV_SIZE,
-                                           params_model.KERNEL_CONV_SIZE),
-                              strides=1,
-                              activation='relu', padding='same'))
-        self.fp_model.add(AveragePooling2D(pool_size=(params_model.KERNEL_POOL_SIZE,
-                                                   params_model.KERNEL_POOL_SIZE),
-                                        strides=params_model.STRIDE_POOL))
+        self.fp_model.add(Conv2D(
+            filters=params_model.L3_N_FILTER,
+            kernel_size=(params_model.L3_KERNEL_SIZE,
+                         params_model.L3_KERNEL_SIZE),
+            strides=1,
+            activation='relu', padding='same'))
+        self.fp_model.add(AveragePooling2D(
+            pool_size=(params_model.POOL_KERNEL_SIZE,
+                       params_model.POOL_KERNEL_SIZE),
+            strides=params_model.POOL_STRIDE))
         self.fp_model.add(Dropout(.05))
         # 8
-        self.fp_model.add(Conv2D(filters=8*params_model.N_FILTER_BASE,
-                              kernel_size=(params_model.KERNEL_CONV_SIZE,
-                                           params_model.KERNEL_CONV_SIZE),
-                              strides=1,
-                              activation='relu', padding='same'))
+        self.fp_model.add(Conv2D(
+            filters=params_model.L4_N_FILTER,
+            kernel_size=(params_model.L4_KERNEL_SIZE,
+                         params_model.L4_KERNEL_SIZE),
+            strides=1,
+            activation='relu', padding='same'))
         self.fp_model.add(Dropout(.05))
         # Output
         self.fp_model.add(Flatten())

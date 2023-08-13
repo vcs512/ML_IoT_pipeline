@@ -47,10 +47,23 @@ class Custom_metrics():
         """
         y_pred = (y_pred >= self.decision_threshold).reshape(y_true.shape)
         y_pred = np.array(y_pred, dtype=int)
-        confusion_matrix = sklearn.metrics.confusion_matrix(y_true=y_true,
-                                                            y_pred=y_pred)
+        
+        # Calculate metrics.
+        recall = sklearn.metrics.recall_score(y_true=y_true,
+                                              y_pred=y_pred)
+        acc = sklearn.metrics.accuracy_score(y_true=y_true,
+                                              y_pred=y_pred)
+        precision = sklearn.metrics.precision_score(y_true=y_true,
+                                                    y_pred=y_pred)
+        metrics_dict = {"{}_{}_recall".format(model_type, title): recall,
+                        "{}_{}_acc".format(model_type, title): acc,
+                        "{}_{}_precision".format(model_type, title): precision}
+        self.logger.log_metrics(metrics_dict)
+        print("{}_{}_Metrics\n".format(model_type, title), metrics_dict)
 
         # plot confusion matrix
+        confusion_matrix = sklearn.metrics.confusion_matrix(y_true=y_true,
+                                                            y_pred=y_pred)
         matrix_figure = plt.figure()
         ax = sns.heatmap(confusion_matrix,
                          annot=True,
@@ -96,6 +109,7 @@ class Custom_metrics():
         errors_idx = np.nonzero(diff)[0]
         wrong_inferences = filepaths[errors_idx].tolist()
         
+        # save images with wrong inferences.
         if draw_errors:
             for error in wrong_inferences:
                 filename = model_type + "_" + title + "_" + error.split("/")[-1]
@@ -114,19 +128,27 @@ class Custom_metrics():
         Get quantization error for fp and qt models.
         Return [quantization_errors_list, mean, std_deviation].
         """
+        # signal errors.
         diff = y_qt - y_fp
         mean = np.mean(diff)
         std = np.std(diff)
 
+        # abs errors.
         abs_diff = np.abs(diff)
         abs_mean = np.mean(np.abs(diff))
         abs_std = np.std(abs_diff)
-
-        qt_metrics = [diff, mean, std,
-                      abs_diff, abs_mean, abs_std]
         
-        print("[mean, std, abs_mean, abs_std]\n",
-               [mean, std, abs_mean, abs_std])
+        # logger metrics.
+        metrics_dict = {"qt_mean": mean,
+                        "qt_std": std,
+                        "qt_abs_mean": abs_mean,
+                        "qt_abs_std": abs_std}
+        self.logger.log_metrics(metrics_dict)
+        print("qt_Metrics\n", metrics_dict)
+        
+        # complete metrics.
+        qt_metrics = dict(diff=diff, mean=mean, std=std,
+                          abs_diff=abs_diff, abs_mean=abs_mean, abs_std=abs_std)
         
         self.logger.log_artifact_pkl(qt_metrics,
                                      "qt_metrics.pkl")
