@@ -4,10 +4,13 @@
 */build/*
 
 # datasets and logs.
-1_dataset/*
-!1_dataset/Readme.md
+dataset/*
+!dataset/Readme.md
 
-3_train/logs/*
-3_train/mlruns/*
+*/4_lite_model/mlruns/*
+*/*/lite_outputs/*
+
 */train_outputs/*
-
+*/mlruns/*
+*/logs/*
+*/models/*
