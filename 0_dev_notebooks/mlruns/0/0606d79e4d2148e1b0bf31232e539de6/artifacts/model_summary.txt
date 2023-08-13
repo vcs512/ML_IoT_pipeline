@@ -1,0 +1,41 @@
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 128, 128, 2)       20        
+                                                                 
+ average_pooling2d (Average  (None, 64, 64, 2)         0         
+ Pooling2D)                                                      
+                                                                 
+ conv2d_1 (Conv2D)           (None, 64, 64, 4)         76        
+                                                                 
+ average_pooling2d_1 (Avera  (None, 32, 32, 4)         0         
+ gePooling2D)                                                    
+                                                                 
+ conv2d_2 (Conv2D)           (None, 32, 32, 4)         148       
+                                                                 
+ average_pooling2d_2 (Avera  (None, 16, 16, 4)         0         
+ gePooling2D)                                                    
+                                                                 
+ dropout (Dropout)           (None, 16, 16, 4)         0         
+                                                                 
+ conv2d_3 (Conv2D)           (None, 16, 16, 8)         296       
+                                                                 
+ average_pooling2d_3 (Avera  (None, 8, 8, 8)           0         
+ gePooling2D)                                                    
+                                                                 
+ dropout_1 (Dropout)         (None, 8, 8, 8)           0         
+                                                                 
+ conv2d_4 (Conv2D)           (None, 8, 8, 16)          1168      
+                                                                 
+ dropout_2 (Dropout)         (None, 8, 8, 16)          0         
+                                                                 
+ flatten (Flatten)           (None, 1024)              0         
+                                                                 
+ dense (Dense)               (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 2733 (10.68 KB)
+Trainable params: 2733 (10.68 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________

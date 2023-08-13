@@ -9,9 +9,10 @@
 dataset/*
 !dataset/Readme.md
 
-*/mlruns/*
+# */mlruns/*
 */logs/*
 */models/*
 
 # hyperparameters tuning history.
 0_dev_notebooks/train_outputs/*/train_errors/*
+0_dev_notebooks/mlruns/*/*/artifacts/*/train_errors
