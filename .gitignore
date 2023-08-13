@@ -1,3 +1,5 @@
+.vscode
+
 # python builds.
 *.pyc
 *.egg-info
@@ -7,10 +9,9 @@
 dataset/*
 !dataset/Readme.md
 
-*/4_lite_model/mlruns/*
-*/*/lite_outputs/*
-
-*/train_outputs/*
 */mlruns/*
 */logs/*
 */models/*
+
+# hyperparameters tuning history.
+0_dev_notebooks/train_outputs/*/train_errors/*
