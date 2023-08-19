@@ -1,3 +1,6 @@
+# code IDE.
+.vscode/*
+
 # python builds.
 *.pyc
 *.egg-info
@@ -7,10 +10,8 @@
 dataset/*
 !dataset/Readme.md
 
-*/4_lite_model/mlruns/*
-*/*/lite_outputs/*
-
 */train_outputs/*
 */mlruns/*
 */logs/*
 */models/*
+model/train_errors/*
