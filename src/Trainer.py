@@ -6,7 +6,6 @@ sys.path.insert(1, '../')
 from dev_modules.vcs_params import params_dataset
 from dev_modules.vcs_params import params_model
 from dev_modules.vcs_params import params_train
-# from dev_modules.vcs_params import params_lite
 
 # import custom model.
 from dev_modules.vcs_model import model_class

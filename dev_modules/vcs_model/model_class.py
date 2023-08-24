@@ -115,12 +115,22 @@ class qt_CNN_MCU():
         Init lite handler class.
         """
         self.lite_h = Lite_handler()
-
+    
+    def load_qt_model(self,
+                      model_path: str) -> bytes:
+        """
+        Load quantized model in "model_path".
+        Return quantized model loaded.
+        """
+        with open(model_path, 'rb') as model_file:
+            self.qt_model = model_file.read()
+        self.lite_h.load_model(self.qt_model)
+        return self.qt_model
 
     def get_model(self,
                   fp_model: Sequential,
                   dataset: ImageDataGenerator,
-                  savedir: str) -> Sequential:
+                  savedir: str) -> bytes:
         """
         Return the qt model build.
         """

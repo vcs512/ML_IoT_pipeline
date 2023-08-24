@@ -32,6 +32,13 @@ class Lite_handler():
             yield([sample.reshape(-1, *sample.shape, 1)])
 
 
+    def load_model(self, qt_model: bytes) -> None:
+        """
+        Load quantized model.
+        """
+        self.qt_model = qt_model
+
+
     def build_quantized_model(self,
                               fp_model: tf.keras.models.Sequential,
                               dataset: ImageDataGenerator,
