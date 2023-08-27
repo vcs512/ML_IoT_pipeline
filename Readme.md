@@ -19,6 +19,8 @@ development to production pipeline:
     Quantize a model and get a binary to embed in IoT/MCU dispositives
 5. [TEST](./0_dev_notebooks/5_fp_qt_train_test.ipynb):
     Confirm training trends, look for over/underfitting
+6. [MICRO_MODEL](./0_dev_notebooks/9_convert_to_TFLiteMicro.ipynb):
+    Convert the TensorFlow Lite model to a TF Lite Micro
 
 ## Automatic scripts
 For automatic usage in CLI, it is possible to run scripts in ```run``` directory.
@@ -29,6 +31,10 @@ $ pip install -r requirements.txt
 ```
 
 # References
+
+# Implementarion of a model in an ESP32 MCU:
+- https://github.com/vcs512/micro-cnn
+
 ## Dataset reference
 - https://www.kaggle.com/datasets/ravirajsinh45/real-life-industrial-dataset-of-casting-product
 
