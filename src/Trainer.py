@@ -89,7 +89,7 @@ class Trainer():
         Tensorflow training generator.
         Return list [train_set, val_set].
         """
-        dir_train = os.path.join("..",
+        dir_train = os.path.join("..", "..",
                                 params_dataset.DATASET_ROOT_DIR,
                                 params_dataset.DATASET_TYPE,
                                 params_dataset.TRAIN_DIR)
@@ -266,7 +266,7 @@ class Trainer():
         Tensorflow test generator.
         Return test_set.
         """
-        dir_test = os.path.join("..",
+        dir_test = os.path.join("..", "..",
                                 params_dataset.DATASET_ROOT_DIR,
                                 params_dataset.DATASET_TYPE,
                                 params_dataset.TEST_DIR)

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/vuser/Documents/backup_07302023/3_tcc_code/ML_IoT_pipeline/ML_IoT_pipeline/0_dev_notebooks/2_train_test_routine/mlruns/0/783702be3703432ebe73818598c92334/artifacts
+end_time: 1693876330544
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 783702be3703432ebe73818598c92334
+run_name: 20230904_220754_half_trunc_40epoch
+run_uuid: 783702be3703432ebe73818598c92334
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1693876078080
+status: 3
+tags: []
+user_id: vuser

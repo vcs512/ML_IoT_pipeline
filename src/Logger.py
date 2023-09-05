@@ -6,7 +6,6 @@ sys.path.insert(1, '../')
 from dev_modules.vcs_params import params_dataset
 from dev_modules.vcs_params import params_model
 from dev_modules.vcs_params import params_train
-from dev_modules.vcs_params import params_lite
 
 import mlflow
 import os
@@ -20,14 +19,14 @@ class Logger():
     """
     Abstraction to log metrics and parameters.
     """
-    def __init__(self: str) -> None:
+    def __init__(self) -> None:
         """
         Initialize mlflow and local loggers.
         """
         mlflow.tensorflow.autolog()
         mlflow.start_run(run_name=params_train.RUN_NAME)
         # log model and training gen parameters.
-        mlflow.log_artifact("../dev_modules/")
+        mlflow.log_artifact("../../dev_modules/")
         mlflow.log_params(params_model.TRAIN_HYPER)
         # create local dirs.]
         self.output_dir = os.path.join('.', params_train.TRAIN_OUTPUTS_DIR)

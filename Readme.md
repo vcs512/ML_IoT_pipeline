@@ -4,26 +4,20 @@ Pipeline to train and evaluate metrics of Convolutional Neural Networks (CNNs)
 that fit in IoT/MCU (Internet of Things / Microcontroller) devices.
 
 ## ML Pipeline
-
 Notebooks were made to follow a standard Machine Learning (ML)
 development to production pipeline:
-- [COMPLETE_INFORMATION](./0_dev_notebooks/Readme.md):
+- [COMPLETE_INFORMATION](./0_dev_notebooks/):
     Complete general information concluded on each step
-1. [DATASET](./dataset/Readme.md):
-    Save the dataset used for training and test
-2. [EDA](./0_dev_notebooks/2_dataset_explore.ipynb):
-    Perform statistical and qualitative analysis in the dataset
-3. [TRAIN](./0_dev_notebooks/3_holdout_train.ipynb):
-    Train a model, tune hyperparameters, evaluate results
-4. [LITE_MODEL](./0_dev_notebooks/4_fp_qt_train.ipynb):
-    Quantize a model and get a binary to embed in IoT/MCU dispositives
-5. [TEST](./0_dev_notebooks/5_fp_qt_train_test.ipynb):
-    Confirm training trends, look for over/underfitting
-6. [MICRO_MODEL](./0_dev_notebooks/9_convert_to_TFLiteMicro.ipynb):
-    Convert the TensorFlow Lite model to a TF Lite Micro
 
 ## Automatic scripts
-For automatic usage in CLI, it is possible to run scripts in ```run``` directory.
+For automatic usage in CLI, it is possible to run scripts in [scripts](./src/scripts/fp_qt_train_test_routine.py).
+
+
+## Model and general parameters
+Module that gather model and general parameters used: [development module](./dev_modules/)
+
+## Model and metrics results
+Directory to save the models and its results: [model dir](./model/)
 
 ## Requirements installation
 ```bash
@@ -32,7 +26,7 @@ $ pip install -r requirements.txt
 
 # References
 
-# Implementarion of a model in an ESP32 MCU:
+## Implementation of a model in an ESP32 MCU:
 - https://github.com/vcs512/micro-cnn
 
 ## Dataset reference

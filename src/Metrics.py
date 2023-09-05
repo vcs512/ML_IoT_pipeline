@@ -5,7 +5,6 @@ sys.path.insert(1, '../')
 # get parameters.
 from dev_modules.vcs_params import params_dataset
 from dev_modules.vcs_params import params_train
-from dev_modules.vcs_params import params_lite
 from dev_modules.vcs_model import model_class
 from dev_modules.vcs_params import params_model
 
@@ -94,7 +93,7 @@ class Custom_metrics():
                          model_type: str,
                          y_true: np.ndarray,
                          y_pred: np.ndarray,
-                         filepaths: str,
+                         filepaths: np.ndarray,
                          draw_errors: bool = False) -> list:
         """
         Save wrong inferences.

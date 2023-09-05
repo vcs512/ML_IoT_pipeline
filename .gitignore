@@ -10,8 +10,11 @@
 dataset/*
 !dataset/Readme.md
 
-*/train_outputs/*
-*/mlruns/*
-*/logs/*
-*/models/*
+0_dev_notebooks/train_outputs/*
+0_dev_notebooks/2_train_test_routine/mlruns/*/*/artifacts/*/train_errors/*
+0_dev_notebooks/2_train_test_routine/train_outputs/*/train_errors/*
+
+0_dev_notebooks/logs/*
+0_dev_notebooks/mlruns/*
+
 model/train_errors/*

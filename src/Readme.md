@@ -1,9 +1,21 @@
-# Training and test routines for CLI
+# Abstration classes
 
-Scripts for automation:
-1. Training routine:
-    - Log training parameters and metrics
-    - Convert to lite quantized model and reevaluate
+## [Trainer](./Trainer.py)
+Operate with datasets:
+- Define sets for training, validation and test
+- Call FP (train) and QT (build) model operations
+- Call metrics handler
 
-2. Test routine:
-    - Log test results
+## [Logger](./Logger.py)
+Ensure logging results and reproducibility:
+- Handler to save *mlflow* objects produced
+
+## [Metrics](./Metrics.py)
+Calculate mathematical metrics:
+- Confusion matrix
+- Quantization errors
+
+## [Lite_handle](./Lite_handle.py)
+Abstract *TensorFlow Lite* operations:
+- Build QT model from representative set
+- Predict routine for QT model

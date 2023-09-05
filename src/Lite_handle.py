@@ -3,9 +3,6 @@ import sys
 import os
 sys.path.insert(1, '../')
 
-# get parameters.
-from dev_modules.vcs_params import params_lite
-
 # logger.
 from src.Logger import Logger
 
